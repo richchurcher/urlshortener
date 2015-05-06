@@ -9,7 +9,7 @@ namespace UrlShortener.Models
         {
             UrlShortenerDbContext context = new UrlShortenerDbContext();
 
-            url = url.Substring(url.IndexOf(":"));
+            url = url.Substring(url.IndexOf(":") + 3);
 
             int length = 1;
             string shortForm = "";

@@ -80,7 +80,7 @@ namespace UrlShortener.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Address,Shortform,Counter")] Url url)
+        public ActionResult Edit([Bind(Include = "Id,Address")] Url url)
         {
             if (ModelState.IsValid)
             {
@@ -114,6 +114,22 @@ namespace UrlShortener.Controllers
             Url url = db.Urls.Find(id);
             db.Urls.Remove(url);
             db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult Go(string shortformUrl)
+        {
+            if (shortformUrl != null)
+            {
+                Url url = db.Urls.SingleOrDefault(u => u.Shortform == shortformUrl);
+                if (url != null)
+                {
+                    url.Counter++;
+                    db.SaveChanges();
+                    return Redirect(url.Address);
+                }
+            }
+
             return RedirectToAction("Index");
         }
 
