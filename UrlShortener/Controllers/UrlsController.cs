@@ -13,7 +13,12 @@ namespace UrlShortener.Controllers
         // GET: Urls
         public ActionResult Index()
         {
-            return View(db.Urls.ToList());
+            NewUrlAndAllViewModel viewModel = new NewUrlAndAllViewModel
+            {
+                NewUrl = new Url(),
+                All = db.Urls.ToList()
+            };
+            return View(viewModel);
         }
 
         // GET: Urls/Details/5
@@ -42,16 +47,17 @@ namespace UrlShortener.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Address,Shortform,Counter")] Url url)
+        public ActionResult Create(NewUrlAndAllViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                db.Urls.Add(url);
+                viewModel.NewUrl.Shortform = UrlMunger.Shortform(viewModel.NewUrl.Address);
+                db.Urls.Add(viewModel.NewUrl);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            return View(url);
+            return View(viewModel);
         }
 
         // GET: Urls/Edit/5
